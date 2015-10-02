@@ -1,0 +1,90 @@
+// v 3.2.0
+// https://github.com/twbs/bootstrap/commit/e33922eb06387fd4ed3a090360a2bc38cf7b8d70
+@import "bootstrap/bootstrap.less";
+@font-face {
+    font-family: 'DejaVuSansMono';
+    src: url('../fonts/DejaVuSansMono.eot');
+    src: url('../fonts/DejaVuSansMono.eot?#iefix') format('eot'),
+         url('../fonts/DejaVuSansMono.woff') format('woff'),
+         url('../fonts/DejaVuSansMono.ttf') format('truetype');
+}
+
+b,
+strong {
+  font-weight: bold;
+  color: #d9d9d9;
+}
+
+.page {
+    padding-top: 10px;
+}
+.page-title {
+    margin-bottom: (@line-height-computed);
+}
+.section {
+    padding-bottom: (@line-height-computed / 2);
+}
+.section-heading {
+    .make-row();
+
+    background: #0f0f0f;
+    border-top: 1px solid #333;
+    > h1, h2, h3, h4, h5, h6 {
+        margin-top: (@line-height-computed / 2);
+        margin-bottom: (@line-height-computed / 2);
+    }
+    margin-top: (@line-height-computed / 2);
+    margin-bottom: (@line-height-computed);
+    padding-bottom: 1px;
+}
+
+.section-subheading {
+    background: #0f0f0f;
+    border-top: 1px solid #333;
+    > h1, h2, h3, h4, h5, h6 {
+        margin-top: (@line-height-computed / 2);
+        margin-bottom: (@line-height-computed / 2);
+    }
+    margin-bottom: (@line-height-computed);
+    padding-bottom: 1px;
+}
+
+.game-container {
+    // border: 1px solid #333;
+}
+.ex-code {
+    width: 100%;
+}
+pre[class*="language-"] {
+    padding: 1em;
+}
+
+.panel-default {
+    .panel-heading {
+        background: #141414;
+        border-left: 1px solid #1d1d1d;
+        border-right: 1px solid #1d1d1d;
+        // border-bottom: 1px solid #161616;
+    }
+
+    .panel-body {
+        border: 1px solid #1d1d1d;
+        border-top:0;
+    }
+}
+
+.ex-code-input {
+    display: block;
+    font-family: 'DejaVuSansMono', monospace;
+    width: 100%;
+    min-height: 300px;
+}
+
+.panel-heading .btn {
+    margin-top: -5px;
+}
+
+.heading-controls {
+    border-bottom: 1px dotted #353535;
+    padding-bottom: 10px;
+}

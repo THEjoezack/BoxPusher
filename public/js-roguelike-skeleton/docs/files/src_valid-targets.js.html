@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/valid-targets.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+            
+                <h1><img src="../assets/css/logo.png" title=""></h1>
+            
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+    <h2 class="off-left">APIs</h2>
+    <div id="api-tabview" class="tabview">
+        <ul class="tabs">
+            <li><a href="#api-classes">Classes</a></li>
+            <li><a href="#api-modules">Modules</a></li>
+        </ul>
+
+        <div id="api-tabview-filter">
+            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+        </div>
+
+        <div id="api-tabview-panel">
+            <ul id="api-classes" class="apis classes">
+            
+                <li><a href="../classes/Array2d.html">Array2d</a></li>
+            
+                <li><a href="../classes/Console.html">Console</a></li>
+            
+                <li><a href="../classes/Entity.html">Entity</a></li>
+            
+                <li><a href="../classes/Entity.Types.html">Entity.Types</a></li>
+            
+                <li><a href="../classes/FovROT.html">FovROT</a></li>
+            
+                <li><a href="../classes/Game.html">Game</a></li>
+            
+                <li><a href="../classes/Input.html">Input</a></li>
+            
+                <li><a href="../classes/LightingROT.html">LightingROT</a></li>
+            
+                <li><a href="../classes/Map.html">Map</a></li>
+            
+                <li><a href="../classes/Mixins.html">Mixins</a></li>
+            
+                <li><a href="../classes/Mouse.html">Mouse</a></li>
+            
+                <li><a href="../classes/MultiObjectManager.html">MultiObjectManager</a></li>
+            
+                <li><a href="../classes/ObjectManager.html">ObjectManager</a></li>
+            
+                <li><a href="../classes/PerformableAction.html">PerformableAction</a></li>
+            
+                <li><a href="../classes/PerformableActionInterface.html">PerformableActionInterface</a></li>
+            
+                <li><a href="../classes/Player.html">Player</a></li>
+            
+                <li><a href="../classes/Renderer.html">Renderer</a></li>
+            
+                <li><a href="../classes/RendererLayer.html">RendererLayer</a></li>
+            
+                <li><a href="../classes/RendererLayer.Types.html">RendererLayer.Types</a></li>
+            
+                <li><a href="../classes/ResolvableAction.html">ResolvableAction</a></li>
+            
+                <li><a href="../classes/ResolvableActionInterface.html">ResolvableActionInterface</a></li>
+            
+                <li><a href="../classes/Tile.html">Tile</a></li>
+            
+                <li><a href="../classes/Tile.Types.html">Tile.Types</a></li>
+            
+                <li><a href="../classes/TileDraw.html">TileDraw</a></li>
+            
+                <li><a href="../classes/TileDrawData.html">TileDrawData</a></li>
+            
+                <li><a href="../classes/Util.html">Util</a></li>
+            
+                <li><a href="../classes/ValidTargets.html">ValidTargets</a></li>
+            
+                <li><a href="../classes/ValidTargetsFinder.html">ValidTargetsFinder</a></li>
+            
+            </ul>
+
+            <ul id="api-modules" class="apis modules">
+            
+            </ul>
+        </div>
+    </div>
+</div>
+
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+        Show:
+        <label for="api-show-inherited">
+            <input type="checkbox" id="api-show-inherited" checked>
+            Inherited
+        </label>
+
+        <label for="api-show-protected">
+            <input type="checkbox" id="api-show-protected">
+            Protected
+        </label>
+
+        <label for="api-show-private">
+            <input type="checkbox" id="api-show-private">
+            Private
+        </label>
+        <label for="api-show-deprecated">
+            <input type="checkbox" id="api-show-deprecated">
+            Deprecated
+        </label>
+
+    </div>
+
+
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <h1 class="file-heading">File: src/valid-targets.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+(function(root) {
+    &#x27;use strict&#x27;;
+
+    /**
+     * Manages a list of valid targets and which is currently selected.
+     * @class ValidTargets
+     * @constructor
+     * @param {Game} game - Game instance this obj is attached to.
+     * @param {Array} [targets=Array] An Array of valid target objects to select from (intended to be in the format &#x60;validTargetsFinder.getValidTargets()&#x60; returns).
+     * @param {Object} settings
+     * @param {Array} [settings.typeSortPriority=this.typeSortPriority] - Array of types in order of their sort priority.
+     * @param {Bool} [settings.mapWidth=game.map.width] - Width of &#x60;this.map&#x60;.
+     * @param {Bool} [settings.mapHeight=game.map.height] - Height of &#x60;this.map&#x60;.
+     * @param {Bool} [settings.skipSort=false] - If true initial sort is skipped.
+     */
+    var ValidTargets = function(game, targets, settings){
+        this.game = game;
+
+        settings = settings || {};
+        this.typeSortPriority = settings.typeSortPriority || [].concat(this.typeSortPriority);
+
+        var width = settings.mapWidth || this.game.map.width;
+        var height = settings.mapWidth || this.game.map.width;
+
+        this.map = new RL.MultiObjectManager(this.game, null, width, height);
+        this.setTargets(targets);
+        if(!settings.skipSort){
+            this.sort();
+        }
+    };
+
+    ValidTargets.prototype = {
+        constructor: ValidTargets,
+
+        /**
+        * Game instance this obj is attached to.
+        * @property game
+        * @type {Game}
+        */
+        game: null,
+
+        /**
+         * Array of target objects.
+         * @type {Array}
+         * @property targets
+         * @readOnly
+         */
+        targets: null,
+
+        /**
+         * Map of target positions.
+         * @type {MultiObjectManager}
+         * @property map
+         *
+         */
+        map: null,
+
+        /**
+         * Currently Selected Object.
+         * @property current
+         * @type {Object}
+         * @readOnly
+         */
+        current: null,
+
+        /**
+         * Array of types in order of their sort priority.
+         * @type {Array}
+         * @property typeSortPriority
+         */
+        typeSortPriority: [],
+
+        /**
+         * Sets the targets, replacing currently set ones.
+         * @method setTargets
+         * @param {Array} targets
+         */
+        setTargets: function(targets){
+            targets = targets || [];
+            this.targets = targets;
+            this.map.reset();
+            for(var i = targets.length - 1; i &gt;= 0; i--){
+                var target = targets[i];
+                this.map.add(target.x, target.y, target);
+            }
+        },
+
+        /**
+         * Sets the currently selected target object.
+         * @method setCurrent
+         * @param {Object} target
+         * @return {Bool} If target was found in &#x60;this.targets&#x60;. (only set if found).
+         */
+        setCurrent: function(target){
+            var index = this.targets.indexOf(target);
+            if(index !== -1){
+                this.current = target;
+                return true;
+            }
+            return false;
+        },
+
+        /**
+         * Gets the currently selected target object.
+         * @method getCurrent
+         * @param {Bool} [autoset=true] - If no target is set to current autoset the first.
+         * @return {Object}
+         */
+        getCurrent: function(autoset){
+            autoset =  autoset !== void 0 ? autoset : true;
+            if(autoset &amp;&amp; !this.current &amp;&amp; this.targets.length){
+                this.sort();
+                this.setCurrent(this.targets[0]);
+            }
+
+            return this.current;
+        },
+
+        /**
+         * Sets the object after the currently selected object to be the selected object.
+         * @method next
+         * @return {Object} The new currently selected object.
+         */
+        next: function(){
+            if(!this.current){
+                return this.getCurrent();
+            }
+
+            var index = this.targets.indexOf(this.current);
+            if(index === this.targets.length - 1){
+                index = 0;
+            } else {
+                index++;
+            }
+            this.setCurrent(this.targets[index]);
+            return this.current;
+        },
+
+        /**
+         * Sets the object before the currently selected object to be the selected object.
+         * @method prev
+         * @return {Object} The new currently selected object.
+         */
+        prev: function(){
+            if(!this.current){
+                return this.getCurrent();
+            }
+
+            var index = this.targets.indexOf(this.current);
+            if(index === 0){
+                index = this.targets.length - 1;
+            } else {
+                index--;
+            }
+            this.setCurrent(this.targets[index]);
+
+            return this.current;
+        },
+
+        /**
+         * Gets the sort priority of an object based on its type using &#x27;this.typeSortPriority&#x27;.
+         * @method getTypeSortPriority
+         * @param {Object} obj
+         * @return {Number}
+         */
+        getTypeSortPriority: function(obj){
+            for(var i = this.typeSortPriority.length - 1; i &gt;= 0; i--){
+                var type = this.typeSortPriority[i];
+                if(obj instanceof type){
+                    return i;
+                }
+            }
+        },
+        /**
+         * Sorts &#x60;this.targets&#x60; by &#x60;this.typeSortPriority&#x60; then by range.
+         * @method sort
+         * @return {Number}
+         */
+        sort: function(){
+            var _this = this;
+            this.targets.sort(function(a, b){
+
+                var aTypeSortPriority = _this.getTypeSortPriority(a.value);
+                var bTypeSortPriority = _this.getTypeSortPriority(b.value);
+
+                if(aTypeSortPriority === bTypeSortPriority){
+                    return a.range - b.range;
+                }
+                if(aTypeSortPriority &gt; bTypeSortPriority){
+                    return 1;
+                }
+                if(aTypeSortPriority &lt; bTypeSortPriority){
+                    return -1;
+                }
+            });
+        },
+
+        /**
+         * Finds a target object by its value.
+         * @method getTargetByValue
+         * @param {Object} value
+         * @return {Object}
+         */
+        getTargetByValue: function(value){
+            for(var i = this.targets.length - 1; i &gt;= 0; i--){
+                var target = this.targets[i];
+                if(target.value === value){
+                    return target;
+                }
+            }
+        }
+    };
+
+    root.RL.ValidTargets = ValidTargets;
+
+}(this));
+    </pre>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
