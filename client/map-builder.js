@@ -66,7 +66,24 @@ function swap(s, index) {
 
 function loadLevel(levelNumber) {
     var result;
-    if(levelNumber % 2 === 0) {
+    if(levelNumber === 0) {
+        result = {
+            width: 9,
+            height: 9,
+            map: [
+                '#########',
+                '#@..H..X#',
+                '#########'
+            ],
+            startingMessage: [
+                'You are a little @',
+                'You can push the little H onto the little X'
+            ],
+            completeMessage: [
+                'Good job, now lets try something harder!'
+            ]
+        };
+    } else if(levelNumber === 1) {
         result = {
             width: 9,
             height: 9,
@@ -80,6 +97,13 @@ function loadLevel(levelNumber) {
                 ' #...#..#',
                 ' #...####',
                 ' ##### '
+            ],
+            startingMessage: [
+                'Cover all of the X to advanced to the next level.',
+                'Refresh the browser if you get stuck!'
+            ],
+            completeMessage: [
+                'Wow, you\'re hard core. Now for a real challenge!'
             ]
         };
     } else {
@@ -96,6 +120,13 @@ function loadLevel(levelNumber) {
                 '#..H.H..#',
                 '#X.H.H.X#',
                 '#########'
+            ],
+            startingMessage: [
+                'Good luck with this one, buddy.',
+                'Refresh the browser after you lose if you\'d like to try again.'
+            ],
+            completeMessage: [
+                'Well...you did it. You won everything!'
             ]
         };
     }
