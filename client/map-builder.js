@@ -12,7 +12,8 @@ exports.build = function(rl, levelNumber) {
         map: mapData.map,
         startingPosition: mapData.startingPosition,
         boxes: mapData.boxes,
-        buttons: mapData.buttons
+        buttons: mapData.buttons,
+        completeMessage: mapData.completeMessage
     };
 
     this.rl.Tile.Types.button = require('./button').create();
@@ -49,6 +50,10 @@ exports.build = function(rl, levelNumber) {
         new rl.RendererLayer(game, 'fov',       {draw: false,    mergeWithPrevLayer: false}),
     ];
     game.start();
+
+    for(var m = 0; m < mapData.startingMessage.length; m++) {
+        game.console.log(mapData.startingMessage[m]);
+    }
 
     return level;
 };

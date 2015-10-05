@@ -35,7 +35,15 @@ observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     observer.send(this, 'levelComplete');
 });
 observer.subscribe(this, 'levelComplete', function(who, data) {
-    $('#modal .modal-content').html('You did it, now do it again!');
+    var message = '';
+
+    for(var m = 0; m < level.completeMessage.length; m++) {
+        message = message + '<p>' + level.completeMessage[m] + '</p>';
+    }
+
+    message = message + '<p>Click to continue</p>';
+    
+    $('#modal .modal-content').html(message);
     $('#modal').modal();
 
     levelNumber = levelNumber + 1;

@@ -70,8 +70,9 @@ var level = require('./map-builder').build(RL, levelNumber);
 var document = window.document;
 var mapContainerEl = document.getElementById('example-map-container');
 mapContainerEl.appendChild(level.game.renderer.canvas);
-//var consoleContainerEl = document.getElementById('example-console-container');
-//consoleContainerEl.appendChild(level.game.console.el);
+var consoleContainerEl = document.getElementById('example-console-container');
+consoleContainerEl.innerHTML = '';
+consoleContainerEl.appendChild(level.game.console.el);
 
 var observer = require("node-observer");
 observer.subscriber = [];
@@ -98,13 +99,25 @@ observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     observer.send(this, 'levelComplete');
 });
 observer.subscribe(this, 'levelComplete', function(who, data) {
-    $('#modal .modal-content').html('You did it, now do it again!');
+    var message = '';
+
+    for(var m = 0; m < level.completeMessage.length; m++) {
+        message = message + '<p>' + level.completeMessage[m] + '</p>';
+    }
+
+    message = message + '<p>Click to continue</p>';
+    
+    $('#modal .modal-content').html(message);
     $('#modal').modal();
 
     levelNumber = levelNumber + 1;
     level = require('./map-builder').build(RL, levelNumber);
+
     mapContainerEl.innerHTML = '';
     mapContainerEl.appendChild(level.game.renderer.canvas);
+
+    consoleContainerEl.innerHTML = '';
+    consoleContainerEl.appendChild(level.game.console.el);
 });
 
 },{"./map-builder":4,"node-observer":5}],4:[function(require,module,exports){
@@ -122,7 +135,8 @@ exports.build = function(rl, levelNumber) {
         map: mapData.map,
         startingPosition: mapData.startingPosition,
         boxes: mapData.boxes,
-        buttons: mapData.buttons
+        buttons: mapData.buttons,
+        completeMessage: mapData.completeMessage
     };
 
     this.rl.Tile.Types.button = require('./button').create();
@@ -160,6 +174,10 @@ exports.build = function(rl, levelNumber) {
     ];
     game.start();
 
+    for(var m = 0; m < mapData.startingMessage.length; m++) {
+        game.console.log(mapData.startingMessage[m]);
+    }
+
     return level;
 };
 
@@ -176,7 +194,24 @@ function swap(s, index) {
 
 function loadLevel(levelNumber) {
     var result;
-    if(levelNumber % 2 === 0) {
+    if(levelNumber === 0) {
+        result = {
+            width: 9,
+            height: 9,
+            map: [
+                '#########',
+                '#@..H..X#',
+                '#########'
+            ],
+            startingMessage: [
+                'You are a little @',
+                'You can push the little H onto the little X'
+            ],
+            completeMessage: [
+                'Good job, now lets try something harder!'
+            ]
+        };
+    } else if(levelNumber === 1) {
         result = {
             width: 9,
             height: 9,
@@ -190,6 +225,13 @@ function loadLevel(levelNumber) {
                 ' #...#..#',
                 ' #...####',
                 ' ##### '
+            ],
+            startingMessage: [
+                'Cover all of the X to advanced to the next level.',
+                'Refresh the browser if you get stuck!'
+            ],
+            completeMessage: [
+                'Wow, you\'re hard core. Now for a real challenge!'
             ]
         };
     } else {
@@ -206,6 +248,13 @@ function loadLevel(levelNumber) {
                 '#..H.H..#',
                 '#X.H.H.X#',
                 '#########'
+            ],
+            startingMessage: [
+                'Good luck with this one, buddy.',
+                'Refresh the browser after you lose if you\'d like to try again.'
+            ],
+            completeMessage: [
+                'Well...you did it. You won everything!'
             ]
         };
     }
