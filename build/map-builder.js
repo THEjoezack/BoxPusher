@@ -107,6 +107,27 @@ exports.build = function(rl, levelNumber) {
 
     game.player.x = level.startingPosition.x;
     game.player.y = level.startingPosition.y;
+
+    // this method is copied from https://github.com/unstoppablecarl/js-roguelike-skeleton/blob/gh-pages/src/player.js
+    // and modified to remove the console logging
+    game.player.move = function(x, y){
+        if(this.canMoveTo(x, y)){
+            this.moveTo(x, y);
+            return true;
+        } else {
+            // entity occupying target tile (if any)
+            var targetTileEnt = this.game.entityManager.get(x, y);
+            // if already occupied
+            if(targetTileEnt){
+                return targetTileEnt.bump(this);
+            } else {
+                // targeted tile (attempting to move into)
+                var targetTile = this.game.map.get(x, y);
+                return targetTile.bump(this);
+            }
+        }
+        return false;
+    },
     game.renderer.layers = [
         new rl.RendererLayer(game, 'map',       {draw: false,   mergeWithPrevLayer: false}),
         new rl.RendererLayer(game, 'entity',    {draw: true,   mergeWithPrevLayer: true}),
@@ -115,9 +136,7 @@ exports.build = function(rl, levelNumber) {
     ];
     game.start();
 
-    for(var m = 0; m < mapData.startingMessage.length; m++) {
-        game.console.log(mapData.startingMessage[m]);
-    }
+    $('#example-console-container').html('<div>' + mapData.startingMessage.join('</div><div>') +'</div>');
 
     return level;
 };

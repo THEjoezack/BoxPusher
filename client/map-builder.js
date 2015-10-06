@@ -43,6 +43,7 @@ exports.build = function(rl, levelNumber) {
 
     game.player.x = level.startingPosition.x;
     game.player.y = level.startingPosition.y;
+
     game.renderer.layers = [
         new rl.RendererLayer(game, 'map',       {draw: false,   mergeWithPrevLayer: false}),
         new rl.RendererLayer(game, 'entity',    {draw: true,   mergeWithPrevLayer: true}),
@@ -51,9 +52,7 @@ exports.build = function(rl, levelNumber) {
     ];
     game.start();
 
-    for(var m = 0; m < mapData.startingMessage.length; m++) {
-        game.console.log(mapData.startingMessage[m]);
-    }
+    $('#example-console-container').html('<div>' + mapData.startingMessage.join('</div><div>') +'</div>');
 
     return level;
 };

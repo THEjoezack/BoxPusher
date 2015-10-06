@@ -6,10 +6,11 @@ var level = require('./map-builder').build(RL, levelNumber);
 var document = window.document;
 var mapContainerEl = document.getElementById('example-map-container');
 mapContainerEl.appendChild(level.game.renderer.canvas);
+/*
 var consoleContainerEl = document.getElementById('example-console-container');
 consoleContainerEl.innerHTML = '';
 consoleContainerEl.appendChild(level.game.console.el);
-
+*/
 var observer = require("node-observer");
 observer.subscriber = [];
 observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
@@ -52,6 +53,8 @@ observer.subscribe(this, 'levelComplete', function(who, data) {
     mapContainerEl.innerHTML = '';
     mapContainerEl.appendChild(level.game.renderer.canvas);
 
+    /*
     consoleContainerEl.innerHTML = '';
     consoleContainerEl.appendChild(level.game.console.el);
+    */
 });
