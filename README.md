@@ -1,13 +1,9 @@
 Demo: http://thejoezack.github.io/BoxPusher/public/
 
-// No FOV!!
-// Why are buttons getting picked up?
-// Need to be able to beat the level
-// Need a way to give up
-// Need more levels
-// Better looking boxes
-// Better looking buttons
+// Modal not blocking keys
+// No instructions on how to move
+// Game area shouldn't move around with keys
+// Refactor code!
 // Lights?
-// Need a "you win"
 // Better looking site
 // Need sound
