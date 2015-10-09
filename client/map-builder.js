@@ -53,7 +53,8 @@ exports.build = function(rl, levelNumber) {
     game.start();
 
     $('#example-console-container').html('<div>' + mapData.startingMessage.join('</div><div>') +'</div>');
-
+debugger;
+    level.renderer.setCenter = function() {}
     return level;
 };
 
