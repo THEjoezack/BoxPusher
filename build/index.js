@@ -68,8 +68,8 @@ var level = require('./map-builder').build(RL, levelNumber);
 
 // get existing DOM elements
 var document = window.document;
-var mapContainerEl = document.getElementById('example-map-container');
-mapContainerEl.appendChild(level.game.renderer.canvas);
+var mapContainerEl = $('#example-map-container');
+mapContainerEl.html(level.game.renderer.canvas);
 /*
 var consoleContainerEl = document.getElementById('example-console-container');
 consoleContainerEl.innerHTML = '';
@@ -99,6 +99,7 @@ observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     }
     observer.send(this, 'levelComplete');
 });
+
 observer.subscribe(this, 'levelComplete', function(who, data) {
     var message = '';
 
@@ -107,15 +108,18 @@ observer.subscribe(this, 'levelComplete', function(who, data) {
     }
 
     message = message + '<p>Click to continue</p>';
-    
+    mapContainerEl.hide();
+    $('#example-console-container').hide();
+
     $('#modal .modal-content').html(message);
     $('#modal').modal();
-
-    levelNumber = levelNumber + 1;
-    level = require('./map-builder').build(RL, levelNumber);
-
-    mapContainerEl.innerHTML = '';
-    mapContainerEl.appendChild(level.game.renderer.canvas);
+    $('#modal').on('hidden.bs.modal', function () {
+        levelNumber = levelNumber + 1;
+        level = require('./map-builder').build(RL, levelNumber);
+        mapContainerEl.html(level.game.renderer.canvas);
+        mapContainerEl.show();
+        $('#example-console-container').show();
+    })
 
     /*
     consoleContainerEl.innerHTML = '';
@@ -170,26 +174,6 @@ exports.build = function(rl, levelNumber) {
     game.player.x = level.startingPosition.x;
     game.player.y = level.startingPosition.y;
 
-    // this method is copied from https://github.com/unstoppablecarl/js-roguelike-skeleton/blob/gh-pages/src/player.js
-    // and modified to remove the console logging
-    game.player.move = function(x, y){
-        if(this.canMoveTo(x, y)){
-            this.moveTo(x, y);
-            return true;
-        } else {
-            // entity occupying target tile (if any)
-            var targetTileEnt = this.game.entityManager.get(x, y);
-            // if already occupied
-            if(targetTileEnt){
-                return targetTileEnt.bump(this);
-            } else {
-                // targeted tile (attempting to move into)
-                var targetTile = this.game.map.get(x, y);
-                return targetTile.bump(this);
-            }
-        }
-        return false;
-    },
     game.renderer.layers = [
         new rl.RendererLayer(game, 'map',       {draw: false,   mergeWithPrevLayer: false}),
         new rl.RendererLayer(game, 'entity',    {draw: true,   mergeWithPrevLayer: true}),
