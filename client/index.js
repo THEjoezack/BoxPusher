@@ -44,7 +44,7 @@ observer.subscribe(this, 'levelComplete', function(who, data) {
     }
 
     message = message + '<p>Click to continue</p>';
-    mapContainerEl.hide();
+    level.game.stopListening();
     $('#example-console-container').hide();
 
     $('#modal .modal-content').html(message);
