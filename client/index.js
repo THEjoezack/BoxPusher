@@ -44,12 +44,13 @@ observer.subscribe(this, 'levelComplete', function(who, data) {
     }
 
     message = message + '<p>Click to continue</p>';
-    level.game.stopListening();
-    $('#example-console-container').hide();
+    level.game.input.stopListening();
 
     $('#modal .modal-content').html(message);
     $('#modal').modal();
     $('#modal').on('hidden.bs.modal', function () {
+        $('#example-console-container').hide();
+        mapContainerEl.hide();
         levelNumber = levelNumber + 1;
         level = require('./map-builder').build(RL, levelNumber);
         mapContainerEl.html(level.game.renderer.canvas);
