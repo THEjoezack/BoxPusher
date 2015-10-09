@@ -1,7 +1,8 @@
 exports.build = function(rl, levelNumber) {
     this.rl = rl;
     var game = new rl.Game();
-    game.entityCanSeeThrough = function() { return true; }
+    game.entityCanSeeThrough = function() { return true; } // don't limit vision
+    game.renderer.setCenter = function() {} // don't move "camera"
 
     var mapData = loadLevel(levelNumber);
     var level = {
@@ -20,7 +21,7 @@ exports.build = function(rl, levelNumber) {
     game.map.loadTilesFromArrayString(level.map, level.charToType, level.defaultType);
 
     // generate and assign a map object (replaces empty default)
-    game.setMapSize(game.map.width, game.map.height);
+    game.setMapSize(9, 9);
 
     // add input keybindings
     game.input.addBindings({
@@ -53,8 +54,7 @@ exports.build = function(rl, levelNumber) {
     game.start();
 
     $('#example-console-container').html('<div>' + mapData.startingMessage.join('</div><div>') +'</div>');
-debugger;
-    level.renderer.setCenter = function() {}
+
     return level;
 };
 
@@ -74,7 +74,7 @@ function loadLevel(levelNumber) {
     if(levelNumber === 0) {
         result = {
             width: 9,
-            height: 9,
+            height: 3,
             map: [
                 '#########',
                 '#@..H..X#',
