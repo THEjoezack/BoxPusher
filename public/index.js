@@ -50,7 +50,7 @@ exports.create = function(game) {
         }
     };
 };
-},{"node-observer":5}],2:[function(require,module,exports){
+},{"node-observer":7}],2:[function(require,module,exports){
 exports.create = function() {
     return {
         name: 'Button',
@@ -62,21 +62,172 @@ exports.create = function() {
     };
 };
 },{}],3:[function(require,module,exports){
-/*globals RL*/
-var levelNumber = 0;
-var level = require('./map-builder').build(RL, levelNumber);
+exports.keyBindings = {
+    up: ['UP_ARROW', 'K', 'W'],
+    down: ['DOWN_ARROW', 'J', 'S'],
+    left: ['LEFT_ARROW', 'H', 'A'],
+    right: ['RIGHT_ARROW', 'L', 'D']
+};
 
-// get existing DOM elements
-var document = window.document;
-var mapContainerEl = $('#example-map-container');
-mapContainerEl.html(level.game.renderer.canvas);
-/*
-var consoleContainerEl = document.getElementById('example-console-container');
-consoleContainerEl.innerHTML = '';
-consoleContainerEl.appendChild(level.game.console.el);
-*/
+exports.charToTypes = {
+    '#': 'wall',
+    '.': 'floor',
+    'X': 'button',
+    'H': 'box'
+};
+
+exports.levels = [
+    {
+        map: [
+            '#########',
+            '#@..H..X#',
+            '#########'
+        ],
+        startingMessage: [
+            'You are a little <span class="player">@</span>',
+            'You can push the <span class="box">H</span> onto the <span class="button">X</span>',
+            'Use the W,A,S,D or arrow keys to move'
+        ],
+        completeMessage: [
+            'Good job, now lets try something harder!'
+        ]
+    },{
+        map: [
+            '   ###   ',
+            '   #X#   ',
+            '   #.#   ',
+            '####H####',
+            '#@...H.X#',
+            '####H####',
+            '   #.#   ',
+            '   #X#   ',
+            '   ###   '
+        ],
+        startingMessage: [
+            'There are three <span class="button">X</span> in this level',
+            'Cover each of them with a <span class="box">H</span> to progress'
+        ],
+        completeMessage: [
+            'Good job, now lets try something harder!'
+        ]
+    },{
+        map: [
+            '#########',
+            '#.......#',
+            '#......H#',
+            '#....##.#',
+            '#@...HHX#',
+            '#########'
+        ],
+        startingMessage: [
+            'You can\'t push more than one <span class="box">H</span> at a time',
+            'Cover each of them with a <span class="box">H</span> to progress'
+        ],
+        completeMessage: [
+            'Good job, now lets try something harder!'
+        ]
+    },{
+        map: [
+            '#####    ',
+            '#@..#    ',
+            '#.HH# ###',
+            '#.H.# #X#',
+            '###.###X#',
+            ' ##....X#',
+            ' #...#..#',
+            ' #...####',
+            ' ##### '
+        ],
+        startingMessage: [
+            'Be careful, there are no take backsies so plan your moves!'
+        ],
+        completeMessage: [
+            'Wow, you\'re hard core. Now for a real challenge!'
+        ]
+    },{
+        map: [
+            '#########',
+            '#X.H.H.X#',
+            '#..H.H..#',
+            '#..H.H..#',
+            '#@.H.H..#',
+            '#..H.H..#',
+            '#..H.H..#',
+            '#X.H.H.X#',
+            '#########'
+        ],
+        startingMessage: [
+            'Good luck with this one, buddy.',
+            'Refresh the browser after you lose if you\'d like to try again.'
+        ],
+        completeMessage: [
+            'Well...you did it. You won everything!'
+        ]
+    },{
+        map: [
+            '#########',
+            '#.......#',
+            '#.......#',
+            '#..HHH..#',
+            '#@.HHH..#',
+            '#..HHH..#',
+            '#.......#',
+            '#.......#',
+            '#########'
+        ],
+        startingMessage: [
+            'Yeah, there\'s no solution. You\'re stuck!'
+        ],
+        completeMessage: [
+            'Well...you did it. You won everything!'
+        ]
+    }
+];
+},{}],4:[function(require,module,exports){
+// responsible for generating the game
+exports.build = function(rl, levelNumber) {
+    var game = new rl.Game();
+    rl.Tile.Types.button = require('./button').create();
+    rl.Entity.Types.box = require('./box').create(game);
+
+    var level = require('./level-builder').getLevel(game, levelNumber);
+
+    addBoxes(level, rl);
+    addPlayer(level);
+
+    game.renderer.layers = [
+        new rl.RendererLayer(game, 'map',      {draw: false, mergeWithPrevLayer: false}),
+        new rl.RendererLayer(game, 'entity',   {draw: true,  mergeWithPrevLayer: true}),
+        new rl.RendererLayer(game, 'lighting', {draw: true,  mergeWithPrevLayer: false}),
+        new rl.RendererLayer(game, 'fov',      {draw: false, mergeWithPrevLayer: false})
+    ];
+    game.input.addBindings(require('./config').keyBindings);
+    game.entityCanSeeThrough = function() { return true; }; // don't limit vision
+    game.renderer.setCenter = function() {}; // don't move "camera"
+    game.renderer.resize(level.map[0].length, level.map.length);
+    game.start();
+
+    return level;
+};
+
+function addBoxes(level, rl) {
+    var game = level.game;
+    for (var i = 0; i < level.boxes.length; i++) {
+        var position = level.boxes[i];
+        var item = new rl.Entity(game, 'box');
+        game.entityManager.add(position.x, position.y, item);
+    }
+}
+
+function addPlayer(level) {
+    level.game.player.x = level.startingPosition.x;
+    level.game.player.y = level.startingPosition.y;
+}
+},{"./box":1,"./button":2,"./config":3,"./level-builder":6}],5:[function(require,module,exports){
+var levelNumber = 0;
+var level = startLevel(levelNumber);
+
 var observer = require("node-observer");
-observer.subscriber = [];
 observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     function isCovered(position) {
         var entities = level.game.entityManager.objects;
@@ -101,194 +252,96 @@ observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
 });
 
 observer.subscribe(this, 'levelComplete', function(who, data) {
-    var message = '';
+    level.game.input.stopListening();
 
+    var message = '';
     for(var m = 0; m < level.completeMessage.length; m++) {
         message = message + '<p>' + level.completeMessage[m] + '</p>';
     }
+    message = message + '<p>Tap a key to continue</p>';
 
-    message = message + '<p>Click to continue</p>';
-    level.game.input.stopListening();
-
-    $('#modal .modal-content').html(message);
-    $('#modal').modal();
-    $('#modal').on('hidden.bs.modal', function () {
-        $('#example-console-container').hide();
-        mapContainerEl.hide();
-        levelNumber = levelNumber + 1;
-        level = require('./map-builder').build(RL, levelNumber);
-        mapContainerEl.html(level.game.renderer.canvas);
-        mapContainerEl.show();
-        $('#example-console-container').show();
+    var modal = $('#modal');
+    var shown = true;
+    modal.find('.modal-content').html(message);
+    modal.keyup(function() {
+        modal.modal('hide');
+    });
+    modal.modal();
+    modal.on('hidden.bs.modal', function () {
+        if(shown) {
+            shown = !shown;
+            levelNumber = levelNumber + 1;
+            level = startLevel(levelNumber);
+        }
     })
-
-    /*
-    consoleContainerEl.innerHTML = '';
-    consoleContainerEl.appendChild(level.game.console.el);
-    */
 });
 
-},{"./map-builder":4,"node-observer":5}],4:[function(require,module,exports){
-exports.build = function(rl, levelNumber) {
-    this.rl = rl;
-    var game = new rl.Game();
-    game.entityCanSeeThrough = function() { return true; } // don't limit vision
-    game.renderer.setCenter = function() {} // don't move "camera"
 
-    var mapData = loadLevel(levelNumber);
-    var level = {
+function startLevel(levelNumber) {
+    /*globals RL*/
+    var rl = RL;
+    var mapContainerEl = $('#example-map-container');
+    var console = $('#example-console-container');
+    console.hide();
+    mapContainerEl.hide();
+    var level = require('./game-builder').build(RL, levelNumber);
+    mapContainerEl.html(level.game.renderer.canvas);
+    console.html('<div>' + level.startingMessage.join('</div><div>') +'</div>');
+    mapContainerEl.html(level.game.renderer.canvas);
+    mapContainerEl.show();
+    console.show();
+    return level;
+}
+
+$('#resetButton').on('click', function() {
+    level.game.input.stopListening();
+    level = startLevel(levelNumber);
+});
+},{"./game-builder":4,"node-observer":7}],6:[function(require,module,exports){
+// responsible for generating the level
+exports.getLevel = function(game, levelNumber) {
+    var levels = require('./config').levels;
+    var index = Math.min(levels.length - 1, levelNumber);
+    var mapData = jQuery.extend(true, {}, levels[index]);
+    mapData.boxes = [];
+    mapData.buttons = [];
+
+    var map = mapData.map;
+    for(var y = 0; y < map.length; y++) {
+        for(var x = 0; x < map[y].length; x++) {
+            if(map[y][x] === '@') {
+                mapData.startingPosition = { x: x, y: y };
+                map[y] = swap(map[y], x);
+            }
+            if(map[y][x] === 'H') {
+                mapData.boxes.push({ x: x, y: y});
+                map[y] = swap(map[y], x);
+            }
+            if(map[y][x] === 'X') {
+                mapData.buttons.push({ x: x, y: y});
+            }
+        }
+    }
+
+    game.map.loadTilesFromArrayString(map, require('./config').charToTypes, 'nothing');
+    game.setMapSize(map[0].length, map.length);
+
+    return {
         game: game,
-        level: levelNumber,
-        defaultType: 'nothing',
-        charToType: charToType,
         map: mapData.map,
         startingPosition: mapData.startingPosition,
         boxes: mapData.boxes,
         buttons: mapData.buttons,
+        startingMessage: mapData.startingMessage,
         completeMessage: mapData.completeMessage
     };
-
-    this.rl.Tile.Types.button = require('./button').create();
-    game.map.loadTilesFromArrayString(level.map, level.charToType, level.defaultType);
-
-    // generate and assign a map object (replaces empty default)
-    game.setMapSize(9, 9);
-
-    // add input keybindings
-    game.input.addBindings({
-        up: ['UP_ARROW', 'K', 'W'],
-        down: ['DOWN_ARROW', 'J', 'S'],
-        left: ['LEFT_ARROW', 'H', 'A'],
-        right: ['RIGHT_ARROW', 'L', 'D']
-    });
-
-    // create entities and add to game.entityManager
-    function addEntity(entity, items) {
-        for(var i = 0; i < items.length; i++) {
-            var position = items[i];
-            var item = new rl.Entity(game, entity);
-            game.entityManager.add(position.x, position.y, item);
-        }
-    }
-    this.rl.Entity.Types.box = require('./box').create(game);
-    addEntity('box', level.boxes);
-
-    game.player.x = level.startingPosition.x;
-    game.player.y = level.startingPosition.y;
-
-    game.renderer.layers = [
-        new rl.RendererLayer(game, 'map',       {draw: false,   mergeWithPrevLayer: false}),
-        new rl.RendererLayer(game, 'entity',    {draw: true,   mergeWithPrevLayer: true}),
-        new rl.RendererLayer(game, 'lighting',  {draw: true,    mergeWithPrevLayer: false}),
-        new rl.RendererLayer(game, 'fov',       {draw: false,    mergeWithPrevLayer: false}),
-    ];
-    game.start();
-
-    $('#example-console-container').html('<div>' + mapData.startingMessage.join('</div><div>') +'</div>');
-
-    return level;
-};
-
-var charToType = {
-    '#': 'wall',
-    '.': 'floor',
-    'X': 'button',
-    'H': 'box'
 };
 
 function swap(s, index) {
     return s.substr(0, index) + '.' + s.substr(index + 1);
 }
 
-function loadLevel(levelNumber) {
-    var result;
-    if(levelNumber === 0) {
-        result = {
-            width: 9,
-            height: 3,
-            map: [
-                '#########',
-                '#@..H..X#',
-                '#########'
-            ],
-            startingMessage: [
-                'You are a little @',
-                'You can push the little H onto the little X'
-            ],
-            completeMessage: [
-                'Good job, now lets try something harder!'
-            ]
-        };
-    } else if(levelNumber === 1) {
-        result = {
-            width: 9,
-            height: 9,
-            map: [
-                '#####    ',
-                '#@..#    ',
-                '#.HH# ###',
-                '#.H.# #X#',
-                '###.###X#',
-                ' ##....X#',
-                ' #...#..#',
-                ' #...####',
-                ' ##### '
-            ],
-            startingMessage: [
-                'Cover all of the X to advanced to the next level.',
-                'Refresh the browser if you get stuck!'
-            ],
-            completeMessage: [
-                'Wow, you\'re hard core. Now for a real challenge!'
-            ]
-        };
-    } else {
-        result = {
-            width: 9,
-            height: 9,
-            map: [
-                '#########',
-                '#X.H.H.X#',
-                '#..H.H..#',
-                '#..H.H..#',
-                '#@.H.H..#',
-                '#..H.H..#',
-                '#..H.H..#',
-                '#X.H.H.X#',
-                '#########'
-            ],
-            startingMessage: [
-                'Good luck with this one, buddy.',
-                'Refresh the browser after you lose if you\'d like to try again.'
-            ],
-            completeMessage: [
-                'Well...you did it. You won everything!'
-            ]
-        };
-    }
-
-    var map = result.map;
-    result.boxes = [];
-    result.buttons = [];
-    for(var y = 0; y < map.length; y++) {
-        for(var x = 0; x < map[y].length; x++) {
-            if(map[y][x] === '@') {
-                result.startingPosition = { x: x, y: y };
-                map[y] = swap(map[y], x);
-            }
-            if(map[y][x] === 'H') {
-                result.boxes.push({ x: x, y: y});
-                map[y] = swap(map[y], x);
-            }
-            if(map[y][x] === 'X') {
-                result.buttons.push({ x: x, y: y});
-            }
-        }
-    }
-    return result;
-}
-
-},{"./box":1,"./button":2}],5:[function(require,module,exports){
+},{"./config":3}],7:[function(require,module,exports){
 "use strict";
 
 var Observer = function() {
@@ -334,4 +387,4 @@ Observer.prototype.send = function(who, what, data) {
 
 module.exports = new Observer();
 
-},{}]},{},[3]);
+},{}]},{},[5]);

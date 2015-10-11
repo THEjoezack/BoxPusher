@@ -1,18 +1,7 @@
-/*globals RL*/
 var levelNumber = 0;
-var level = require('./map-builder').build(RL, levelNumber);
+var level = startLevel(levelNumber);
 
-// get existing DOM elements
-var document = window.document;
-var mapContainerEl = $('#example-map-container');
-mapContainerEl.html(level.game.renderer.canvas);
-/*
-var consoleContainerEl = document.getElementById('example-console-container');
-consoleContainerEl.innerHTML = '';
-consoleContainerEl.appendChild(level.game.console.el);
-*/
 var observer = require("node-observer");
-observer.subscriber = [];
 observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     function isCovered(position) {
         var entities = level.game.entityManager.objects;
@@ -37,29 +26,48 @@ observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
 });
 
 observer.subscribe(this, 'levelComplete', function(who, data) {
-    var message = '';
+    level.game.input.stopListening();
 
+    var message = '';
     for(var m = 0; m < level.completeMessage.length; m++) {
         message = message + '<p>' + level.completeMessage[m] + '</p>';
     }
+    message = message + '<p>Tap a key to continue</p>';
 
-    message = message + '<p>Click to continue</p>';
-    level.game.input.stopListening();
-
-    $('#modal .modal-content').html(message);
-    $('#modal').modal();
-    $('#modal').on('hidden.bs.modal', function () {
-        $('#example-console-container').hide();
-        mapContainerEl.hide();
-        levelNumber = levelNumber + 1;
-        level = require('./map-builder').build(RL, levelNumber);
-        mapContainerEl.html(level.game.renderer.canvas);
-        mapContainerEl.show();
-        $('#example-console-container').show();
+    var modal = $('#modal');
+    var shown = true;
+    modal.find('.modal-content').html(message);
+    modal.keyup(function() {
+        modal.modal('hide');
+    });
+    modal.modal();
+    modal.on('hidden.bs.modal', function () {
+        if(shown) {
+            shown = !shown;
+            levelNumber = levelNumber + 1;
+            level = startLevel(levelNumber);
+        }
     })
+});
 
-    /*
-    consoleContainerEl.innerHTML = '';
-    consoleContainerEl.appendChild(level.game.console.el);
-    */
+
+function startLevel(levelNumber) {
+    /*globals RL*/
+    var rl = RL;
+    var mapContainerEl = $('#example-map-container');
+    var console = $('#example-console-container');
+    console.hide();
+    mapContainerEl.hide();
+    var level = require('./game-builder').build(RL, levelNumber);
+    mapContainerEl.html(level.game.renderer.canvas);
+    console.html('<div>' + level.startingMessage.join('</div><div>') +'</div>');
+    mapContainerEl.html(level.game.renderer.canvas);
+    mapContainerEl.show();
+    console.show();
+    return level;
+}
+
+$('#resetButton').on('click', function() {
+    level.game.input.stopListening();
+    level = startLevel(levelNumber);
 });

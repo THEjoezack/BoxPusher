@@ -49,7 +49,7 @@ gulp.task('clean', function(){
 });
 
 gulp.task('publish',['bundle'], function(){
-  gulp.src(['./client/**/*.html', './bower_components/**/*', './build/**/*'])
+  gulp.src(['./client/**/*.html', './client/**/*.css', './bower_components/**/*', './build/**/*'])
     .pipe(gulp.dest('./public'));
 });
 

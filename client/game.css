@@ -1,0 +1,28 @@
+body {
+    background-color: black;
+    color: white;
+}
+.modal-content {
+    background-color: black;
+}
+#example-map-container {
+    margin-top: 25px;
+}
+#example-console-container {
+    margin-top: 25px;
+}
+.player {
+    font-family: monospace;
+}
+.box {
+    color: #FF8000;
+    background-color: #663300;
+    padding: 0 3px 0 3px;
+    font-family: monospace;
+}
+.button {
+    color: #CC0000;
+    background-color: #CCCCCC;
+    padding: 0 3px 0 3px;
+    font-family: monospace
+}
