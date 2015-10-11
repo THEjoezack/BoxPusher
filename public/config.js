@@ -76,7 +76,7 @@ exports.levels = [
             ' ##### '
         ],
         startingMessage: [
-            'Be careful, there are no take backsies so plan your moves!'
+            'Be careful, there is no pulling so plan your moves!'
         ],
         completeMessage: [
             'Wow, you\'re hard core. Now for a real challenge!'
