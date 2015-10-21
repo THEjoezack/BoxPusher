@@ -1,4 +1,4 @@
-Demo: http://thejoezack.github.io/BoxPusher/public/
+Click here to play: http://thejoezack.github.io/BoxPusher/public/
 
 TODO
 * Refactor code!
