@@ -21,6 +21,7 @@ exports.levels = [
             '#########'
         ],
         startingMessage: [
+            'Level 1',
             'You are a little <span class="player">@</span>',
             'You can push the <span class="box">H</span> onto the <span class="button">X</span>',
             'Use the W,A,S,D or arrow keys to move'
@@ -41,6 +42,7 @@ exports.levels = [
             '   ###   '
         ],
         startingMessage: [
+            'Level 2',
             'There are three <span class="button">X</span> in this level',
             'Cover each of them with a <span class="box">H</span> to progress'
         ],
@@ -57,6 +59,7 @@ exports.levels = [
             '#########'
         ],
         startingMessage: [
+            'Level 3',
             'You can\'t push more than one <span class="box">H</span> at a time',
             'Cover each of them with a <span class="box">H</span> to progress'
         ],
@@ -76,6 +79,7 @@ exports.levels = [
             ' ##### '
         ],
         startingMessage: [
+            'Level 4',
             'Be careful, there is no pulling so plan your moves!'
         ],
         completeMessage: [
@@ -94,6 +98,7 @@ exports.levels = [
             '#########'
         ],
         startingMessage: [
+            'Final Level',
             'Good luck with this one, buddy.',
             'Refresh the browser after you lose if you\'d like to try again.'
         ],
@@ -113,6 +118,7 @@ exports.levels = [
             '#########'
         ],
         startingMessage: [
+            'Level: Purgatory',
             'Yeah, there\'s no solution. You\'re stuck!'
         ],
         completeMessage: [
