@@ -20,6 +20,8 @@ var util = require('gulp-util');
 var clean = require('gulp-clean');
 
 // Tasks
+gulp.task('lint', ['lint-client','lint-test']);
+
 gulp.task('lint-client', function() {
   return gulp.src('./client/**/*.js')
     .pipe(jshint())
@@ -37,7 +39,7 @@ gulp.task('bower', function() {
     .pipe(gulp.dest('./bower_components'))
 });
 
-gulp.task('test', ['lint-client', 'lint-test'], function() {
+gulp.task('test', function() {
   return gulp.src('./test/**/*.js')
     .pipe(mocha({ reporter: 'spec' }))
     .on('error', util.log);

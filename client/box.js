@@ -5,7 +5,7 @@ exports.create = function(game) {
         color: '#FF8000',
         bgColor: '#663300',
         bump: function(entity){
-            var observer = require("node-observer");
+            var observer = require('node-observer');
 
             // bumping entity is the player
             if(entity === game.player){
@@ -32,7 +32,7 @@ exports.create = function(game) {
                         // move player into previously occupied tile
                         entity.moveTo(prevX, prevY);
 
-                        if(targetPushTile.type === "button") {
+                        if(targetPushTile.type === 'button') {
                             observer.send(this, 'buttonCovered', targetPushTile);
                         }
 

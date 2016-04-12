@@ -1,8 +1,9 @@
 // responsible for generating the level
 exports.getLevel = function(game, levelNumber) {
-    var levels = require('./config').levels;
-    var index = Math.min(levels.length - 1, levelNumber);
-    var mapData = jQuery.extend(true, {}, levels[index]);
+    var levels = require('./config').levels,
+        index = Math.min(levels.length - 1, levelNumber),
+        mapData = require('clone')(levels[index]);
+
     mapData.boxes = [];
     mapData.buttons = [];
 

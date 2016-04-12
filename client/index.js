@@ -1,7 +1,7 @@
 var levelNumber = 0;
 var level = startLevel(levelNumber);
 
-var observer = require("node-observer");
+var observer = require('node-observer');
 observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     function isCovered(position) {
         var entities = level.game.entityManager.objects;
@@ -14,7 +14,7 @@ observer.subscribe(this, 'buttonCovered', function(who, coveredButton) {
     }
     for(var i = 0; i < level.buttons.length; i++) {
         var position = level.buttons[i];
-        if(position.x == coveredButton.x && position.y == coveredButton.y) {
+        if(position.x === coveredButton.x && position.y === coveredButton.y) {
             continue;
         }
         if(isCovered(position)) {
@@ -33,7 +33,8 @@ observer.subscribe(this, 'levelComplete', function(who, data) {
         message = message + '<p>' + level.completeMessage[m] + '</p>';
     }
     message = message + '<p>Tap a key to continue</p>';
-
+    
+    /*globals $*/
     var modal = $('#modal');
     var shown = true;
     modal.find('.modal-content').html(message);
@@ -47,17 +48,17 @@ observer.subscribe(this, 'levelComplete', function(who, data) {
             levelNumber = levelNumber + 1;
             level = startLevel(levelNumber);
         }
-    })
+    });
 });
 
 
 function startLevel(levelNumber) {
-    /*globals RL*/
-    var rl = RL;
     var mapContainerEl = $('#example-map-container');
     var console = $('#example-console-container');
     console.hide();
     mapContainerEl.hide();
+    
+    /*globals RL*/
     var level = require('./game-builder').build(RL, levelNumber);
     mapContainerEl.html(level.game.renderer.canvas);
     console.html('<div>' + level.startingMessage.join('</div><div>') +'</div>');
